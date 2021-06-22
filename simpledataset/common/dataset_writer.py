@@ -1,4 +1,7 @@
+import logging
 import zipfile
+
+logger = logging.getLogger(__name__)
 
 
 class DatasetWriter:
@@ -7,6 +10,13 @@ class DatasetWriter:
 
     def write(self, dataset, output_filepath):
         assert '/' not in str(output_filepath)
+
+        # Generate labels.txt
+        labels_txt_filepath = self._directory / 'labels.txt'
+        if labels_txt_filepath.exists():
+            logger.warning("labels.txt already exists. Skipping labels.txt.")
+        else:
+            labels_txt_filepath.write_text('\n'.join(dataset.labels))
 
         if dataset.type == 'image_classification':
             with open(self._directory / output_filepath, 'w') as f:

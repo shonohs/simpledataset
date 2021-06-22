@@ -5,6 +5,7 @@ setuptools.setup(name='simpledataset',
                  version='0.1.0',
                  description="Utility tools for SIMPLE vision dataset format.",
                  packages=setuptools.find_packages(),
+                 install_requires=['pillow', 'tqdm'],
                  license='MIT',
                  url='https://github.com/shonohs/simpledataset',
                  classifiers=[

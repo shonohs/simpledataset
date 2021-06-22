@@ -1,11 +1,12 @@
 import collections
 import json
+import pathlib
 from simpledataset.common import ObjectDetectionDataset
 
 
 class CocoReader:
-    def read(self, json_filepath, images_dir):
-        data = json.loads(json_filepath.read_text())
+    def read(self, input_json_filepath, input_images_dir, **args):
+        data = json.loads(input_json_filepath.read_text())
 
         image_map = {}
         for image in data['images']:
@@ -23,7 +24,12 @@ class CocoReader:
 
             dataset_data.append((image_filename, labels))
 
-        return ObjectDetectionDataset(dataset_data, images_dir)
+        return ObjectDetectionDataset(dataset_data, input_images_dir)
+
+    @staticmethod
+    def add_arguments(parser):
+        parser.add_argument('input_json_filepath', type=pathlib.Path)
+        parser.add_argument('input_images_dir', type=pathlib.Path)
 
 
 class CocoWriter:

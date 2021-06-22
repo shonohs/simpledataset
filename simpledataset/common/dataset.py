@@ -8,9 +8,10 @@ class ImageDataset:
     # This variable must be overwritten by a child class.
     LABEL_LOADER_CLASS = None
 
-    def __init__(self, data, directory):
+    def __init__(self, data, directory, label_names=None):
         self._data = data
         self._directory = directory
+        self._label_names = label_names
         self._reader = FileReader(directory)
 
     @classmethod
@@ -59,6 +60,13 @@ class ImageDataset:
 
     def get_max_class_id(self):
         raise NotImplementedError
+
+    @property
+    def labels(self):
+        if self._label_names:
+            return self._label_names
+        self._label_names = self.get_labels()
+        return self._label_names
 
 
 class LabelLoader:
