@@ -28,7 +28,8 @@ dataset_map <input_dataset> <output_dataset> --map <src_class_id> <dst_class_id>
 
 dataset_split # NYI
 
-dataset_concat # NYI
+# Concatenate multiple datasets into one dataset.
+dataset_concat <input_txt_filepath> <input_txt_filepath2> [<input_txt_filepath>, ...] <output_txt_filepath>
 
 dataset_shuffle # NYI
 
@@ -43,13 +44,23 @@ dataset_convert_to <input_dataset> <output_format> <output_filepath>
 
 
 ## Examples
+
+Please see [CONVERT.md](CONVERT.md) for the dataset conversion examples.
+
 ### Change class ids
 For example, if you would like to change MNIST to odd or even classification dataset, you can use dataset_map command. In this example, we use class_id=0 for even numbers, and class_id=1 for odd numbers.
 ```bash
 dataset_map mnist.txt new_dataset.txt --map 2 0 --map 3 1 --map 4 0 --map 5 1 --map 6 0 --map 7 1 --map 8 0 --map 9 1
 ```
 
+### Concatenate two datasets
+For example, if you had 2 datasets (mnist_subset and mnist_subset2) and wanted to combine them, you can use dataset_concat command.
+```bash
+dataset_concat mnist_subset/images.txt mnist_subset2/images.txt new_combined.txt
 
+# new_combined.txt has 20 classes at this point. Let's merge them into 10 classes.
+dataset_map new_combined.txt new_mapped_10.txt --map 10 0 --map 11 1 --map 12 2 --map 13 3 --map 14 4 --map 15 5 --map 16 6 --map 17 7 --map 18 8 --map 19 9
+```
 ## SIMPLE Dataset format
 Currently there are 2 dataset formats, Image Classification and Object Detection. Both datasets have a single txt file, image files and an optional list of label names (labels.txt). In addition to that, Object Detection datasets has label files that contains bbox info.
 

@@ -1,13 +1,16 @@
 import argparse
 import pathlib
 from simpledataset.common import DatasetWriter
-from simpledataset.converters import CocoReader, OpenImagesODReader
+from simpledataset.converters import CocoReader, OpenImagesODReader, OpenImagesVRReader
+
+
+_READERS = {'coco': CocoReader,
+            'openimages_od': OpenImagesODReader,
+            'openimages_vr': OpenImagesVRReader}
 
 
 def convert_from(source_format, output_filepath, args):
-    reader = {'coco': CocoReader,
-              'openimages_od': OpenImagesODReader}[source_format]()
-
+    reader = _READERS[source_format]()
     dataset = reader.read(**vars(args))
 
     directory = output_filepath.parent
@@ -19,11 +22,9 @@ def main():
     parser = argparse.ArgumentParser()
 
     subparsers = parser.add_subparsers(dest='source_format')
-    coco_parser = subparsers.add_parser('coco')
-    openimages_od_parser = subparsers.add_parser('openimages_od')
-
-    CocoReader.add_arguments(coco_parser)
-    OpenImagesODReader.add_arguments(openimages_od_parser)
+    for name, reader in _READERS.items():
+        p = subparsers.add_parser(name)
+        reader.add_arguments(p)
 
     parser.add_argument('output_filepath', type=pathlib.Path)
 

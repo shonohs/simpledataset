@@ -14,9 +14,9 @@ class DatasetWriter:
         # Generate labels.txt
         labels_txt_filepath = self._directory / 'labels.txt'
         if labels_txt_filepath.exists():
-            logger.warning("labels.txt already exists. Skipping labels.txt.")
-        else:
-            labels_txt_filepath.write_text('\n'.join(dataset.labels))
+            labels_txt_filepath = self._get_unique_filename('labels.txt')
+            logger.warning(f"labels.txt already exists. Saving to {labels_txt_filepath}")
+        labels_txt_filepath.write_text('\n'.join(dataset.labels))
 
         if dataset.type == 'image_classification':
             with open(self._directory / output_filepath, 'w') as f:

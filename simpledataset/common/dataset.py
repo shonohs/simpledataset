@@ -1,7 +1,11 @@
 import io
+import logging
 import pathlib
 import zipfile
 import PIL.Image
+
+
+logger = logging.getLogger(__name__)
 
 
 class ImageDataset:
@@ -55,8 +59,10 @@ class ImageDataset:
         if labels_filepath.exists():
             labels = labels_filepath.read_text().splitlines()
         else:
+            logger.warning("labels.txt is not found. Generating class names...")
             labels = [str(i) for i in range(self.get_max_class_id() + 1)]
 
+        assert len(labels) == len(set(labels))
         assert len(labels) >= self.get_max_class_id()
         return labels
 
@@ -65,6 +71,10 @@ class ImageDataset:
 
     def get_max_class_id(self):
         raise NotImplementedError
+
+    @property
+    def base_directory(self):
+        return self._directory
 
     @property
     def labels(self):

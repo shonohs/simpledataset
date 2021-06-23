@@ -14,6 +14,7 @@ setuptools.setup(name='simpledataset',
                  ],
                  entry_points={
                      'console_scripts': [
+                         'dataset_concat=simpledataset.commands.concat:main',
                          'dataset_convert_from=simpledataset.commands.convert_from:main',
                          'dataset_convert_to=simpledataset.commands.convert_to:main',
                          'dataset_filter=simpledataset.commands.filter:main',
