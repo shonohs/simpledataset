@@ -9,6 +9,11 @@ class ImageDataset:
     LABEL_LOADER_CLASS = None
 
     def __init__(self, data, directory, label_names=None):
+        assert isinstance(data, list)
+        if data:
+            assert len(data[0]) == 2
+            assert isinstance(data[0][0], str)
+
         self._data = data
         self._directory = directory
         self._label_names = label_names

@@ -25,7 +25,8 @@ class DatasetWriter:
         elif dataset.type == 'object_detection':
             label_zip_filename = self._get_unique_filename('labels.zip')
             with open(self._directory / output_filepath, 'w') as f:
-                with zipfile.ZipFile(self._directory / label_zip_filename, mode='w', compression=zipfile.ZIP_STORED) as zip_f:
+                # Use zlib to compress the labels.zip. It's fastest and have good compression ratio.
+                with zipfile.ZipFile(self._directory / label_zip_filename, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_f:
                     for i, (image, labels) in enumerate(dataset):
                         with zip_f.open(f'{i}.txt', 'w') as zf:
                             self._write_object_detection_labels(zf, labels)

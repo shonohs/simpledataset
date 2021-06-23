@@ -21,8 +21,9 @@ def print_summary(main_txt, directory):
     print(f"The number of classes: {len(num_class_samples)}")
     print(f"Max class id: {dataset.get_max_class_id()}")
     print("Class distribution:")
+    labels = dataset.labels
     for class_id in sorted(num_class_samples.keys()):
-        print(f"    Class {class_id}: {num_class_samples[class_id]}")
+        print(f"    Class {class_id} ({labels[class_id]}): {num_class_samples[class_id]}")
 
 
 def main():

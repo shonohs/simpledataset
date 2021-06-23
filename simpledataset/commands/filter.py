@@ -36,8 +36,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('main_txt_filepath', type=pathlib.Path)
     parser.add_argument('output_filename')
-    parser.add_argument('--include_class', nargs='*', default=[], metavar='CLASS_ID')
-    parser.add_argument('--exclude_class', nargs='*', default=[], metavar='CLASS_ID')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--include_class', nargs='*', default=[], metavar='CLASS_ID')
+    group.add_argument('--exclude_class', nargs='*', default=[], metavar='CLASS_ID')
     args = parser.parse_args()
 
     if '/' in args.output_filename:

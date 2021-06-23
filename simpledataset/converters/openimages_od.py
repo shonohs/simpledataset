@@ -63,14 +63,9 @@ class OpenImagesODReader:
     def add_arguments(parser):
         parser.add_argument('bbox_csv_filepath', type=pathlib.Path)
         parser.add_argument('openimages_images_dir', type=pathlib.Path)
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument('--exclude_occluded', action='store_false', dest='include_occluded')
-
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument('--include_depiction', action='store_true')
-
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument('--include_inside', action='store_true')
+        parser.add_argument('--exclude_occluded', action='store_false', dest='include_occluded')
+        parser.add_argument('--include_depiction', action='store_true')
+        parser.add_argument('--include_inside', action='store_true')
 
     @staticmethod
     def _resolve_image_filename(images_dir, image_id):

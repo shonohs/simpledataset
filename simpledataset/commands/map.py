@@ -8,10 +8,10 @@ def map_dataset(main_txt, directory, output_filepath, mappings_list):
     mappings = {int(src): int(dst) for src, dst in mappings_list}
 
     if dataset.type == 'image_classification':
-        data = [(image, map(lambda x: mappings.get(x, x), labels)) for image, labels in dataset]
+        data = [(image, [mappings.get(x, x) for x in labels]) for image, labels in dataset]
         dataset = ImageClassificationDataset(data, directory)
     elif dataset.type == 'object_detection':
-        data = [(image, map(lambda x: (mappings.get(x, x), *x[1:]), labels)) for image, labels in dataset]
+        data = [(image, [(mappings.get(x[0], x[0]), *x[1:]) for x in labels]) for image, labels in dataset]
         dataset = ObjectDetectionDataset(data, directory)
     else:
         raise RuntimeError
