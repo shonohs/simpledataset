@@ -105,3 +105,9 @@ The format of a label file is:
 ## Usage for remote datasets
 NYI.
 This tool allows you to use datasets on Azure Blob Storage. You can update a dataset on the storage efficiently.
+
+```bash
+# To download a dataset from Azure Blob Storage.
+dataset_download <url_with_container_sas> <output_dir>
+```
+
