@@ -143,8 +143,9 @@ class ObjectDetectionDataset(ImageDataset):
     def get_max_class_id(self):
         max_id = 0
         for image, labels in self:
-            m = max(s[0] for s in labels)
-            max_id = max(m, max_id)
+            if labels:
+                m = max(s[0] for s in labels)
+                max_id = max(m, max_id)
         return max_id
 
 
