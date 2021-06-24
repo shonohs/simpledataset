@@ -64,7 +64,7 @@ class CocoWriter:
 
         categories = []
         for i, label in enumerate(dataset.get_labels()):
-            categories.append({'id': i, 'name': label})
+            categories.append({'id': i, 'name': label, 'supercategory': 'none'})
 
         coco_data = {'info': {}, 'images': images, 'annotations': annotations, 'categories': categories}
 
