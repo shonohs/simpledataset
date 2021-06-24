@@ -11,7 +11,7 @@ Utility tools for simple vision image dataset format. WORK IN PROGRESS.
 
 ## Install
 ```
-pip install simpledataset==0.1.0
+pip install simpledataset==0.1.1
 ```
 
 ## Usage
@@ -37,8 +37,8 @@ dataset_sample # NYI
 
 dataset_pack # NYI
 
-# Convert from/to other dataset types. COCO format is supported now.
-dataset_convert_from <input_dataset> <input_format> <output_filepath>
+# Convert from/to other dataset types. 
+dataset_convert_from {coco|openimages_od|openimages_vr} ... <output_filepath>
 dataset_convert_to <input_dataset> <output_format> <output_filepath>
 ```
 
