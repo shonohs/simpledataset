@@ -49,7 +49,9 @@ class ImageDataset:
 
     def load_image(self, image_filename):
         with io.BytesIO(self.read_image_binary(image_filename)) as f:
-            return PIL.Image.open(f)
+            image = PIL.Image.open(f)
+            image.load()
+            return image
 
     def read_image_binary(self, image_filename):
         return self._reader.read(image_filename, 'rb')

@@ -37,6 +37,9 @@ dataset_sample # NYI
 
 dataset_pack # NYI
 
+# Draw bounding boxes into images.
+dataset_draw <input_txt_filepath> <output_dir>
+
 # Convert from/to other dataset types. 
 dataset_convert_from {coco|openimages_od|openimages_vr} ... <output_filepath>
 dataset_convert_to <input_dataset> <output_format> <output_filepath>
