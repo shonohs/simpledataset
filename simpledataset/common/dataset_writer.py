@@ -8,15 +8,17 @@ class DatasetWriter:
     def __init__(self, directory):
         self._directory = directory
 
-    def write(self, dataset, output_filepath):
+    def write(self, dataset, output_filepath, skip_labels_txt=False):
         assert '/' not in str(output_filepath)
 
         # Generate labels.txt
-        labels_txt_filepath = self._directory / 'labels.txt'
-        if labels_txt_filepath.exists():
-            labels_txt_filepath = self._get_unique_filename('labels.txt')
-            logger.warning(f"labels.txt already exists. Saving to {labels_txt_filepath}")
-        labels_txt_filepath.write_text('\n'.join(dataset.labels))
+        if not skip_labels_txt:
+            labels_txt_filepath = self._directory / 'labels.txt'
+            if labels_txt_filepath.exists():
+                labels_txt_filename = self._get_unique_filename('labels.txt')
+                labels_txt_filepath = self._directory / labels_txt_filename
+                logger.warning(f"labels.txt already exists. Saving to {labels_txt_filepath}")
+            labels_txt_filepath.write_text('\n'.join(dataset.labels))
 
         if dataset.type == 'image_classification':
             with open(self._directory / output_filepath, 'w') as f:
