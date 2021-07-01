@@ -44,7 +44,7 @@ class CocoWriter:
                 area = (x2 - x) * (y2 - y)
                 annotations.append({'id': annotation_index,
                                     'image_id': i,
-                                    'category_id': class_id,
+                                    'category_id': class_id + 1,  # COCO class_id is 1-indexed in the official dataset file.
                                     'area': area,
                                     'bbox': [x, y, x2 - x, y2 - y],
                                     'iscrowd': 0})
@@ -64,7 +64,8 @@ class CocoWriter:
 
         categories = []
         for i, label in enumerate(dataset.get_labels()):
-            categories.append({'id': i, 'name': label, 'supercategory': 'none'})
+            # 1-indexed category id.
+            categories.append({'id': i + 1, 'name': label, 'supercategory': 'none'})
 
         coco_data = {'info': {}, 'images': images, 'annotations': annotations, 'categories': categories}
 
