@@ -34,11 +34,11 @@ class OpenImagesODReader:
                 if image_id not in image_sizes:
                     image_sizes[image_id] = self._get_image_size(openimages_images_dir, image_id)
                 w, h = image_sizes[image_id]
-                if not include_occluded and row['IsOccluded'] == '1':
+                if not include_occluded and row.get('IsOccluded') == '1':
                     continue
-                if not include_depiction and row['IsDepiction'] == '1':
+                if not include_depiction and row.get('IsDepiction') == '1':
                     continue
-                if not include_inside and row['IsInside'] == '1':
+                if not include_inside and row.get('IsInside') == '1':
                     continue
 
                 box_count += 1
