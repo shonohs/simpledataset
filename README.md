@@ -11,7 +11,7 @@ Utility tools for simple vision image dataset format. WORK IN PROGRESS.
 
 ## Install
 ```
-pip install simpledataset==0.1.1
+pip install simpledataset
 ```
 
 ## Usage
@@ -36,6 +36,9 @@ dataset_shuffle # NYI
 dataset_sample # NYI
 
 dataset_pack # NYI
+
+# Remove labels with no actual data.
+dataset_defrag <input_txt_filepath> <output_txt_filepath>
 
 # Draw bounding boxes into images.
 dataset_draw <input_txt_filepath> <output_dir>
