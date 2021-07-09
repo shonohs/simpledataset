@@ -42,4 +42,17 @@ dataset_convert_from openimages_od oidv6-train-annotations-vrd.csv images/ conve
 dataset_summary converted.txt
 ```
 
+## COCO Object Detection to SIMPLE Object Detection dataset
 
+```zsh
+# Download COCO dataset from https://cocodataset.org/#download
+unzip annotations_trainval2017.zip
+unzip val2017.zip
+
+# Convert to SIMPLE format.
+# dataset_convert_from coco <coco's json filepath> <coco's image directory> <output filename>
+dataset_convert_from coco annotations/instances_val2017.json val2017/ converted.txt
+
+# Check the summary
+dataset_summary converted.txt
+```
