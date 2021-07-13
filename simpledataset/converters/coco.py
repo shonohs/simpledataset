@@ -16,6 +16,9 @@ class CocoReader:
         annotations = collections.defaultdict(list)
         for annotation in data['annotations']:
             bbox = annotation['bbox']
+            if int(bbox[0]+bbox[2]) == int(bbox[0]) or int(bbox[1]+bbox[3]) == int(bbox[1]):
+                print(f"Invalid bounding box detected. Skipping... image_id: {annotation['image_id']}, box: {bbox}")
+                continue
             annotations[annotation['image_id']].append((annotation['category_id'], int(bbox[0]), int(bbox[1]), int(bbox[0]+bbox[2]), int(bbox[1]+bbox[3])))
 
         for image in data['images']:
