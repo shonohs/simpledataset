@@ -2,7 +2,7 @@ import setuptools
 
 
 setuptools.setup(name='simpledataset',
-                 version='0.1.2',
+                 version='0.1.3',
                  description="Utility tools for SIMPLE vision dataset format.",
                  packages=setuptools.find_packages(),
                  install_requires=['pillow', 'requests', 'tenacity', 'tqdm'],
