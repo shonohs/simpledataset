@@ -37,12 +37,19 @@ class CocoReader:
 
             dataset_data.append((image_filename, labels))
 
-        return ObjectDetectionDataset(dataset_data, input_images_dir)
+        label_names = self._get_labels(data['categories'])
+        return ObjectDetectionDataset(dataset_data, input_images_dir, label_names=label_names)
 
     @staticmethod
     def add_arguments(parser):
         parser.add_argument('input_json_filepath', type=pathlib.Path)
         parser.add_argument('input_images_dir', type=pathlib.Path)
+
+    @staticmethod
+    def _get_labels(categories):
+        name_map = {c['id']: c['name'] for c in categories}
+        max_id = max(name_map.keys())
+        return [name_map.get(i, str(i)) for i in range(max_id + 1)]
 
 
 class CocoWriter:
