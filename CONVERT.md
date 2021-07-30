@@ -15,15 +15,14 @@ cd ../
 wget https://storage.googleapis.com/openimages/v6/oidv6-train-annotations-bbox.csv
 
 # Convert to a SIMPLE dataset: converted.txt
-dataset_convert_from openimages_od oidv6-train-annotations-bbox.csv images/ converted.txt
+# In this example --skip-images flag is used because the dataset is too large.
+dataset_convert_from openimages_od oidv6-train-annotations-bbox.csv images/ converted.txt --skip-images
 
 # Check the summary
 dataset_summary converted.txt
 ```
 
-## OpenImages Visual Relationships to SIMPLE Object Detection dataset.
-
-In this conversion, we use only 'is' relationship, and use the attributes as bounding box labels. 
+## OpenImages Visual Relationships to SIMPLE Visual Relationship dataset.
 
 ```zsh
 # Download training dataset images.
@@ -55,4 +54,21 @@ dataset_convert_from coco annotations/instances_val2017.json val2017/ converted.
 
 # Check the summary
 dataset_summary converted.txt
+```
+
+## HICO-DET to SIMPLE Visual Relationship dataset
+
+```zsh
+tar zxvf hico_20160224_det.tar.gz
+cd hico_20160224_det
+
+# Convert to SIMPLE format.
+# dataset_convert_from hicodet <annotation filepath> <image directory> <bbox_train|bbox_test> <output filepath>
+# Invisible relationship will be ignored.
+dataset_convert_from hicodet anno_box.mat images/train2015 bbox_train train/images.txt
+dataset_convert_from hicodet anno_box.mat images/test2015 bbox_test test/images.txt
+
+# Check the summary
+dataset_summary train/images.txt
+dataset_summary test/images.txt
 ```

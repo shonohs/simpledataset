@@ -17,8 +17,6 @@ class OpenImagesODReader:
              bbox_csv_filepath (pathlib.Path): Filepath to annotation-bbox.csv.
              images_dir (pathlib.Path): The directory contains image files.
         """
-        logger.warning("Note that this converter doesn't copy image files.")
-
         annotations = collections.defaultdict(list)
         image_sizes = {}
         label_name_set = set()

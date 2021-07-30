@@ -81,6 +81,10 @@ class ImageDataset:
         return self._directory
 
     @property
+    def base_images_directory(self):
+        return self._images_directory
+
+    @property
     def labels(self):
         if self._label_names:
             return self._label_names

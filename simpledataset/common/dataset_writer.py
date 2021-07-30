@@ -1,21 +1,8 @@
 import logging
 import zipfile
+import tqdm
 
 logger = logging.getLogger(__name__)
-
-
-def _get_unique_filename(directory, filename):
-    if not (directory / filename).exists():
-        return filename
-
-    stem, ext = filename.split('.', maxsplit=1)
-
-    for i in range(100):
-        tmp_filename = f'{stem}{i}.{ext}'
-        if not (directory / tmp_filename).exists():
-            return tmp_filename
-
-    raise RuntimeError(f"Failed to find a unique filename for {filename}")
 
 
 def _make_unique_filepath(filepath):
@@ -39,7 +26,7 @@ class ImageClassificationLabelWriter(LabelWriter):
     def write(self, file_handler, dataset):
         for image, labels in dataset:
             assert all(isinstance(i, int) for i in labels)
-            file_handler.write(f"{image} {'.'.join([str(i) for i in labels])}\n")
+            file_handler.write(f"{image} {','.join([str(i) for i in labels])}\n")
 
 
 class ZipLabelWriter(LabelWriter):
@@ -90,7 +77,7 @@ class DatasetWriter:
             logger.info(f"Saving images to {images_zip_filepath}")
             used_entry_name = set()
             with zipfile.ZipFile(images_zip_filepath, mode='w', compression=zipfile.ZIP_STORED) as f:
-                for image, labels in data:
+                for image, labels in tqdm.tqdm(data, "Copying images.", disable=None):
                     entry_name = image.split('@')[-1]
                     if entry_name in used_entry_name:
                         raise RuntimeError(f"Duplicated entry name: {entry_name}")

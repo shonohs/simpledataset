@@ -22,7 +22,7 @@ class CocoReader:
             bbox = annotation['bbox']
             new_label = (annotation['category_id'], int(bbox[0]), int(bbox[1]), int(bbox[0]+bbox[2]), int(bbox[1]+bbox[3]))
             if new_label[1] == new_label[3] or new_label[2] == new_label[4]:
-                logger.warning(f"Image {annotation['image_id']} has an incalid bounding box: {new_label}. Skipping...")
+                logger.warning(f"Image {annotation['image_id']} has an invalid bounding box: {new_label}. Skipping...")
                 continue
 
             if new_label in annotations[annotation['image_id']]:
