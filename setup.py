@@ -27,5 +27,6 @@ setuptools.setup(name='simpledataset',
                          'dataset_draw=simpledataset.commands.draw:main',
                          'dataset_filter=simpledataset.commands.filter:main',
                          'dataset_map=simpledataset.commands.map:main',
+                         'dataset_pack=simpledataset.commands.pack:main',
                          'dataset_summary=simpledataset.commands.summary:main'
                      ]})

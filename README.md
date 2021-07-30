@@ -35,7 +35,8 @@ dataset_shuffle # NYI
 
 dataset_sample # NYI
 
-dataset_pack # NYI
+# Re-package images and labels into new zip files.
+dataset_pack <input_txt_filepath> <output_filepath> [--images_directory=<images_directory>] [--keep_empty_images]
 
 # Remove labels with no actual data.
 dataset_defrag <input_txt_filepath> <output_txt_filepath>

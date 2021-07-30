@@ -13,8 +13,7 @@ def convert_from(source_format, output_filepath, args):
     reader = _READERS[source_format]()
     dataset = reader.read(**vars(args))
 
-    directory = output_filepath.parent
-    DatasetWriter(directory).write(dataset, output_filepath)
+    DatasetWriter().write(dataset, output_filepath)
     print(f"Successfully saved {output_filepath}.")
 
 

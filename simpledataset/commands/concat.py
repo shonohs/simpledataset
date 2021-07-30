@@ -49,7 +49,8 @@ def concat_datasets(main_txt_filepaths, output_filepath):
     elif dataset_type == 'visual_relationship':
         dataset = VisualRelationshipDataset(data, directory, label_names=labels)
 
-    DatasetWriter(directory).write(dataset, output_filepath)
+    copy_images = any(f.parent != output_filepath.parent for f in main_txt_filepaths)
+    DatasetWriter().write(dataset, output_filepath, copy_images=copy_images)
     print(f"Successfully saved {output_filepath}")
 
 

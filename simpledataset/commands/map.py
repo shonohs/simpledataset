@@ -3,24 +3,24 @@ import pathlib
 from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
 
 
-def map_dataset(main_txt, directory, output_filepath, mappings_list):
-    dataset = SimpleDatasetFactory().load(main_txt, directory)
+def map_dataset(main_txt_filepath, output_filepath, mappings_list):
+    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
     mappings = {int(src): int(dst) for src, dst in mappings_list}
 
     if dataset.type == 'image_classification':
         data = [(image, [mappings.get(x, x) for x in labels if mappings.get(x, x) >= 0]) for image, labels in dataset]
-        dataset = ImageClassificationDataset(data, directory)
+        dataset = ImageClassificationDataset(data, main_txt_filepath.parent)
     elif dataset.type == 'object_detection':
         data = [(image, [(mappings.get(x[0], x[0]), *x[1:]) for x in labels if mappings.get(x[0], x[0]) >= 0]) for image, labels in dataset]
-        dataset = ObjectDetectionDataset(data, directory)
+        dataset = ObjectDetectionDataset(data, main_txt_filepath.parent)
     elif dataset.type == 'visual_relationshop':
         data = [(image, [(mappings.get(x[0], x[0]), *x[1:5], mappings.get(x[5], x[5]), *x[5:10], mappings.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
         data = [(image, [x for x in labels if x[0] >= 0 and x[5] >= 0 and x[10] >= 0]) for image, labels in dataset]
-        dataset = VisualRelationshipDataset(data, directory)
+        dataset = VisualRelationshipDataset(data, main_txt_filepath.parent)
     else:
         raise RuntimeError
 
-    DatasetWriter(directory).write(dataset, output_filepath, skip_labels_txt=True)
+    DatasetWriter().write(dataset, output_filepath, skip_labels_txt=True)
     print(f"Successfully saved {output_filepath}")
 
 
@@ -56,10 +56,7 @@ def main():
     if args.main_txt_filepath.parent != args.output_filepath.parent:
         parser.error("The output file must be in the same directory.")
 
-    main_txt = args.main_txt_filepath.read_text()
-    directory = args.main_txt_filepath.parent
-
-    if (directory / args.output_filepath).exists():
+    if args.output_filepath.exists():
         parser.error(f"{args.output_filepath} already exists.")
 
     if (not (args.map or args.map_all)) or (args.map and args.map_all):
@@ -67,7 +64,7 @@ def main():
 
     mappings_list = generate_mapping(args.map_all[0], args.map_all[1]) if args.map_all else args.map
 
-    map_dataset(main_txt, directory, args.output_filepath, mappings_list)
+    map_dataset(args.main_txt_filepath, args.output_filepath, mappings_list)
 
 
 if __name__ == '__main__':

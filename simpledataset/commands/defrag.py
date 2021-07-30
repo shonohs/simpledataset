@@ -40,7 +40,7 @@ def defrag(main_txt_filepath, output_filepath):
     else:
         raise RuntimeError
 
-    DatasetWriter(output_filepath.parent).write(dataset, output_filepath)
+    DatasetWriter().write(dataset, output_filepath)
     print(f"Successfully saved {output_filepath}")
 
 

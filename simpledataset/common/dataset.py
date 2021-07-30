@@ -12,7 +12,7 @@ class ImageDataset:
     # This variable must be overwritten by a child class.
     LABEL_LOADER_CLASS = None
 
-    def __init__(self, data, directory, label_names=None):
+    def __init__(self, data, directory, label_names=None, images_directory=None):
         assert isinstance(data, list)
         if data:
             assert len(data[0]) == 2
@@ -20,11 +20,13 @@ class ImageDataset:
 
         self._data = data
         self._directory = directory
+        self._images_directory = images_directory or directory
         self._label_names = label_names
         self._reader = FileReader(directory)
+        self._image_reader = FileReader(self._images_directory)
 
     @classmethod
-    def load(cls, main_txt, directory):
+    def load(cls, main_txt, directory, images_dir):
         data = []
 
         label_loader = cls.LABEL_LOADER_CLASS(directory)
@@ -38,7 +40,7 @@ class ImageDataset:
             print(f"Failed to parse '{line}'")
             raise
 
-        return cls(data, directory)
+        return cls(data, directory, images_directory=images_dir)
 
     def __iter__(self):
         for d in self._data:
@@ -54,7 +56,7 @@ class ImageDataset:
             return image
 
     def read_image_binary(self, image_filename):
-        return self._reader.read(image_filename, 'rb')
+        return self._image_reader.read(image_filename, 'rb')
 
     def get_labels(self):
         labels_filepath = self._directory / 'labels.txt'
@@ -192,10 +194,10 @@ class SimpleDatasetFactory:
                          'object_detection': ObjectDetectionDataset,
                          'visual_relationship': VisualRelationshipDataset}
 
-    def load(self, main_txt, directory=pathlib.Path('.')):
+    def load(self, main_txt, directory=pathlib.Path('.'), images_directory=None):
         dataset_type = DatasetTypeDetector().detect(main_txt, directory)
         if dataset_type not in self.SUPPORTED_DATASET:
             raise RuntimeError(f"Unsupported dataset type: {dataset_type}")
 
         dataset_class = self.SUPPORTED_DATASET[dataset_type]
-        return dataset_class.load(main_txt, directory)
+        return dataset_class.load(main_txt, directory, images_directory)
