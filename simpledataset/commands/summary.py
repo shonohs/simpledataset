@@ -14,9 +14,15 @@ def print_summary(main_txt, directory):
     elif dataset.type == 'object_detection':
         for image, labels in dataset:
             num_class_samples.update(x[0] for x in labels)
+    elif dataset.type == 'visual_relationship':
+        for image, labels in dataset:
+            num_class_samples.update(x[0] for x in labels)
+            num_class_samples.update(x[5] for x in labels)
+            num_class_samples.update(x[10] for x in labels)
     else:
         raise RuntimeError
 
+    print(f"The dataset type: {dataset.type}")
     print(f"The number of images: {len(dataset)}")
     print(f"The number of classes: {len(num_class_samples)}")
     print(f"Max class id: {dataset.get_max_class_id()}")

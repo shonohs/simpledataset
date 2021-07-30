@@ -1,6 +1,6 @@
 import argparse
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
 
 
 def map_dataset(main_txt, directory, output_filepath, mappings_list):
@@ -13,6 +13,10 @@ def map_dataset(main_txt, directory, output_filepath, mappings_list):
     elif dataset.type == 'object_detection':
         data = [(image, [(mappings.get(x[0], x[0]), *x[1:]) for x in labels if mappings.get(x[0], x[0]) >= 0]) for image, labels in dataset]
         dataset = ObjectDetectionDataset(data, directory)
+    elif dataset.type == 'visual_relationshop':
+        data = [(image, [(mappings.get(x[0], x[0]), *x[1:5], mappings.get(x[5], x[5]), *x[5:10], mappings.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
+        data = [(image, [x for x in labels if x[0] >= 0 and x[5] >= 0 and x[10] >= 0]) for image, labels in dataset]
+        dataset = VisualRelationshipDataset(data, directory)
     else:
         raise RuntimeError
 

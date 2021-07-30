@@ -1,7 +1,7 @@
 import argparse
 import logging
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,9 @@ def filter_dataset(main_txt, directory, output_filepath, include_class_ids, excl
         # Remove images that have no labels
         data = [d for d in data if d[1]]
         dataset = ObjectDetectionDataset(data, directory)
+    elif dataset.type == 'visual_relationship':
+        data = [(image, [x for x in labels if x[10] in include_class_ids]) for image, labels in dataset]
+        dataset = VisualRelationshipDataset(data, directory)
     else:
         raise RuntimeError
 

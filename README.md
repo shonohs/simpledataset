@@ -1,6 +1,6 @@
 # simpledataset
 
-Utility tools for simple vision image dataset format. WORK IN PROGRESS.
+Utility tools for simple vision image dataset format.
 
 ## Features
 * See the summary of a dataset
@@ -107,6 +107,18 @@ The format of a label file is:
 <bbox_y_max> ::= <int>
 ```
 
+
+### Visual Relationship
+The main txt format is same with Object Detection.
+
+The format of a label file is:
+```
+<file> ::= <label_line> ('\n' <label_line>)*
+<label_line> ::= <subject_id> ' ' <subject_bbox_x_min> ' ' <subject_bbox_y_min> ' ' <subject_bbox_x_max> ' ' <subject_bbox_y_max> ' ' <object_id> ' ' <object_bbox_x_min> ' ' <object_bbox_y_min> ' ' <object_bbox_x_max> ' ' <object_bbox_y_max> ' ' <predicate_id>
+<subject_id> ::= <int>
+<object_id> ::= <int>
+<predicate_id> ::= <int> 
+```
 
 ## Usage for remote datasets
 NYI.

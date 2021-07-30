@@ -27,6 +27,7 @@ def _draw_ic_labels(image, annotations, label_names):
 def draw_dataset(main_txt_filepath, output_dir):
     dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
 
+    # TODO: Support VR dataset
     drawer = {'image_classificaiton': _draw_ic_labels,
               'object_detection': _draw_od_labels}[dataset.type]
 

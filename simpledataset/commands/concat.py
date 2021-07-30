@@ -1,7 +1,7 @@
 import argparse
 import collections
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
 
 
 def concat_datasets(main_txt_filepaths, output_filepath):
@@ -35,6 +35,8 @@ def concat_datasets(main_txt_filepaths, output_filepath):
                 new_labels = [i + label_id_offset for i in d[1]]
             elif dataset_type == 'object_detection':
                 new_labels = [(i[0] + label_id_offset, *i[1:]) for i in d[1]]
+            elif dataset_type == 'visual_relationship':
+                new_labels = [(i[0] + label_id_offset, *i[1:5], i[5] + label_id_offset, *i[6:10], i[10] + label_id_offset) for i in d[1]]
             annotations[new_path].extend(new_labels)
         label_id_offset += len(dataset.labels)
 
@@ -44,6 +46,8 @@ def concat_datasets(main_txt_filepaths, output_filepath):
         dataset = ImageClassificationDataset(data, directory, label_names=labels)
     elif dataset_type == 'object_detection':
         dataset = ObjectDetectionDataset(data, directory, label_names=labels)
+    elif dataset_type == 'visual_relationship':
+        dataset = VisualRelationshipDataset(data, directory, label_names=labels)
 
     DatasetWriter(directory).write(dataset, output_filepath)
     print(f"Successfully saved {output_filepath}")

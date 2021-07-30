@@ -1,6 +1,6 @@
 import argparse
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
 
 
 def defrag(main_txt_filepath, output_filepath):
@@ -13,6 +13,11 @@ def defrag(main_txt_filepath, output_filepath):
     elif dataset.type == 'object_detection':
         for image, labels in dataset:
             used_labels.update([x[0] for x in labels])
+    elif dataset.type == 'visual_relationship':
+        for image, labels in dataset:
+            used_labels.update([x[0] for x in labels])
+            used_labels.update([x[5] for x in labels])
+            used_labels.update([x[10] for x in labels])
     else:
         raise RuntimeError
 
@@ -29,6 +34,9 @@ def defrag(main_txt_filepath, output_filepath):
     elif dataset.type == 'object_detection':
         data = [(image, [(mapping.get(x[0], x[0]), *x[1:]) for x in labels]) for image, labels in dataset]
         dataset = ObjectDetectionDataset(data, main_txt_filepath.parent, label_names=new_label_names)
+    elif dataset.type == 'visual_relationship':
+        data = [(image, [(mapping.get(x[0], x[0]), *x[1:5], mapping.get(x[5], x[5]), *x[5:10], mapping.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
+        dataset = VisualRelationshipDataset(data, main_txt_filepath.parent, label_names=new_label_names)
     else:
         raise RuntimeError
 
