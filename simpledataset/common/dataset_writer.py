@@ -75,13 +75,15 @@ class DatasetWriter:
             images_zip_filepath = _make_unique_filepath(output_filepath.parent / 'images.zip')
             images_zip_filename = images_zip_filepath.name
             logger.info(f"Saving images to {images_zip_filepath}")
-            used_entry_name = set()
+
+            has_duplicated_entry_name = self._has_duplicated_entry_name(dataset)
+
             with zipfile.ZipFile(images_zip_filepath, mode='w', compression=zipfile.ZIP_STORED) as f:
-                for image, labels in tqdm.tqdm(data, "Copying images.", disable=None):
+                for i, (image, labels) in tqdm.tqdm(enumerate(data), "Copying images.", disable=None):
                     entry_name = image.split('@')[-1]
-                    if entry_name in used_entry_name:
-                        raise RuntimeError(f"Duplicated entry name: {entry_name}")
-                    used_entry_name.add(entry_name)
+                    if has_duplicated_entry_name:
+                        suffix = entry_name.split('.')[-1]
+                        entry_name = f'{i}.{suffix}'
                     image_binary = dataset.read_image_binary(image)
                     with f.open(entry_name, 'w') as zf:
                         zf.write(image_binary)
@@ -91,3 +93,13 @@ class DatasetWriter:
         label_writer = self.LABEL_WRITERS[dataset.type](output_filepath.parent)
         with open(output_filepath, 'w') as f:
             label_writer.write(f, data)
+
+    @staticmethod
+    def _has_duplicated_entry_name(dataset):
+        entry_name_set = set()
+        for image, _ in dataset:
+            entry_name = image.split('@')[-1]
+            if entry_name in entry_name_set:
+                return True
+            entry_name_set.add(entry_name)
+        return False

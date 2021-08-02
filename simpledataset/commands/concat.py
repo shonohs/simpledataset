@@ -1,5 +1,6 @@
 import argparse
 import collections
+import hashlib
 import pathlib
 from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
 
@@ -19,6 +20,7 @@ def concat_datasets(main_txt_filepaths, output_filepath):
     labels = []
     label_id_offset = 0
     annotations = collections.defaultdict(list)
+    image_md5s = {}
     for dataset in datasets:
         print(f"Concatenating {len(dataset)} images and {len(dataset.labels)} classes.")
         for new_label in dataset.labels:
@@ -38,8 +40,11 @@ def concat_datasets(main_txt_filepaths, output_filepath):
             elif dataset_type == 'visual_relationship':
                 new_labels = [(i[0] + label_id_offset, *i[1:5], i[5] + label_id_offset, *i[6:10], i[10] + label_id_offset) for i in d[1]]
             annotations[new_path].extend(new_labels)
+            if new_path not in image_md5s:
+                image_md5s[new_path] = hashlib.md5(dataset.read_image_binary(d[0])).hexdigest()
         label_id_offset += len(dataset.labels)
 
+    annotations = _dedup_images(annotations, image_md5s)
     data = [(key, annotations[key]) for key in annotations]
 
     if dataset_type == 'image_classification':
@@ -52,6 +57,31 @@ def concat_datasets(main_txt_filepaths, output_filepath):
     copy_images = any(f.parent != output_filepath.parent for f in main_txt_filepaths)
     DatasetWriter().write(dataset, output_filepath, copy_images=copy_images)
     print(f"Successfully saved {output_filepath}")
+
+
+def _dedup_images(annotations, image_hashs):
+    """Find duplicated entries and merge them.
+    Args:
+        annotations: dict. image_filepath => labels.
+        image_hashs: dict. image_filepath => hash.
+    """
+
+    hash_to_path = {}
+    for image_path, image_hash in image_hashs.items():
+        if image_hash not in hash_to_path:
+            hash_to_path[image_hash] = image_path
+
+    new_annotations = {}
+    for image_filepath, labels in annotations.items():
+        image_hash = image_hashs[image_filepath]
+        new_path = hash_to_path[image_hash]
+
+        if new_path in new_annotations:
+            labels = new_annotations[new_path] + labels
+
+        new_annotations[new_path] = labels
+
+    return new_annotations
 
 
 def _is_relative_to(p, p2):
