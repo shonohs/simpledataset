@@ -24,12 +24,29 @@ def _draw_ic_labels(image, annotations, label_names):
         draw.text((0, i * 10), label_names[class_id], color='red')
 
 
+def _draw_vr_labels(image, annotations, label_names):
+    draw = PIL.ImageDraw.Draw(image)
+    for subject_id, s_x, s_y, s_x2, s_y2, object_id, o_x, o_y, o_x2, o_y2, predicate_id in annotations:
+        color = COLOR_CODES[object_id % len(COLOR_CODES)]
+        draw.rectangle(((o_x, o_y), (o_x2, o_y2)), outline=color)
+        draw.text((o_x, o_y), label_names[object_id])
+
+        color = COLOR_CODES[subject_id % len(COLOR_CODES)]
+        draw.rectangle(((s_x, s_y), (s_x2, s_y2)), outline=color)
+        draw.text((s_x, s_y), label_names[subject_id])
+
+        o_center = ((o_x + o_x2) // 2, (o_y + o_y2) // 2)
+        s_center = ((s_x + s_x2) // 2, (s_y + s_y2) // 2)
+        draw.line((o_center, s_center), fill=color)
+        draw.text(o_center, label_names[predicate_id])
+
+
 def draw_dataset(main_txt_filepath, output_dir):
     dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
 
-    # TODO: Support VR dataset
     drawer = {'image_classificaiton': _draw_ic_labels,
-              'object_detection': _draw_od_labels}[dataset.type]
+              'object_detection': _draw_od_labels,
+              'visual_relationship': _draw_vr_labels}[dataset.type]
 
     for image_filename, annotations in tqdm.tqdm(dataset):
         image = dataset.load_image(image_filename)
