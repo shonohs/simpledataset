@@ -11,7 +11,8 @@ logger = logging.getLogger(__name__)
 class HicoDetReader:
     def read(self, input_mat_filepath, input_images_dir, key_name, **args):
         def read_box(input_array):
-            x, y, x2, y2 = (int(input_array[i][0][0]) for i in range(4))
+            x, x2, y, y2 = (int(input_array[i][0][0]) for i in range(4))
+            assert x < x2 and y < y2
             return (x, y, x2, y2)
 
         data = scipy.io.loadmat(input_mat_filepath)
