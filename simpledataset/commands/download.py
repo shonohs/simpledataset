@@ -46,6 +46,15 @@ def download_dataset(main_txt_url, output_dir):
     main_filename = urllib.parse.urlparse(main_txt_url).path.split('/')[-1]
     main_txt_filepath = output_dir / main_filename
     _download_file(main_txt_url, main_txt_filepath)
+
+    # Download labels.txt
+    url = _replace_filename_in_url(main_txt_url, 'labels.txt')
+    try:
+        _download_file(url, output_dir / 'labels.txt')
+    except IOError:
+        print("labels.txt is not found.")
+
+    # Download referenced files.
     referenced_filenames = _find_referenced_files(main_txt_filepath)
     for filename in referenced_filenames:
         url = _replace_filename_in_url(main_txt_url, filename)
