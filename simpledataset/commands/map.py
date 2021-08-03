@@ -13,9 +13,9 @@ def map_dataset(main_txt_filepath, output_filepath, mappings_list):
     elif dataset.type == 'object_detection':
         data = [(image, [(mappings.get(x[0], x[0]), *x[1:]) for x in labels if mappings.get(x[0], x[0]) >= 0]) for image, labels in dataset]
         dataset = ObjectDetectionDataset(data, main_txt_filepath.parent)
-    elif dataset.type == 'visual_relationshop':
-        data = [(image, [(mappings.get(x[0], x[0]), *x[1:5], mappings.get(x[5], x[5]), *x[5:10], mappings.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
-        data = [(image, [x for x in labels if x[0] >= 0 and x[5] >= 0 and x[10] >= 0]) for image, labels in dataset]
+    elif dataset.type == 'visual_relationship':
+        data = [(image, [(mappings.get(x[0], x[0]), *x[1:5], mappings.get(x[5], x[5]), *x[6:10], mappings.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
+        data = [(image, [x for x in labels if x[0] >= 0 and x[5] >= 0 and x[10] >= 0]) for image, labels in data]
         dataset = VisualRelationshipDataset(data, main_txt_filepath.parent)
     else:
         raise RuntimeError

@@ -1,13 +1,14 @@
 import argparse
 import pathlib
 from simpledataset.common import DatasetWriter
-from simpledataset.converters import CocoReader, HicoDetReader, OpenImagesODReader, OpenImagesVRReader
+from simpledataset.converters import CocoReader, HicoDetReader, OpenImagesODReader, OpenImagesVRReader, VisualGenomeVRReader
 
 
 _READERS = {'coco': CocoReader,
             'hicodet': HicoDetReader,
             'openimages_od': OpenImagesODReader,
-            'openimages_vr': OpenImagesVRReader}
+            'openimages_vr': OpenImagesVRReader,
+            'visualgenome_vr': VisualGenomeVRReader}
 
 
 def convert_from(source_format, output_filepath, skip_images, args):
