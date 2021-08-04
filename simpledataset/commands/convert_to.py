@@ -13,7 +13,8 @@ def convert_to(main_txt, directory, target_format, output_filepath):
         DatasetWriter().write(dataset, output_filepath)
         print(f"Successfully saved to {output_filepath}")
     elif target_format in WRITERS:
-        WRITERS[target_format].write(dataset, output_filepath, output_filepath.parent)
+        writer = WRITERS[target_format]()
+        writer.write(dataset, output_filepath, output_filepath.parent)
         print(f"Successfully saved to {output_filepath}")
     else:
         raise RuntimeError(f"Unsupported format: {target_format}")
@@ -33,6 +34,7 @@ def main():
     if args.output_filepath.exists():
         parser.error(f"{args.output_filepath} already exists.")
 
+    args.output_filepath.parent.mkdir(parents=True, exist_ok=True)
     convert_to(main_txt, directory, args.target_format, args.output_filepath)
 
 

@@ -79,7 +79,7 @@ class DatasetWriter:
             has_duplicated_entry_name = self._has_duplicated_entry_name(dataset)
 
             with zipfile.ZipFile(images_zip_filepath, mode='w', compression=zipfile.ZIP_STORED) as f:
-                for i, (image, labels) in tqdm.tqdm(enumerate(data), "Copying images.", disable=None):
+                for i, (image, labels) in enumerate(tqdm.tqdm(data, "Copying images.", disable=None)):
                     entry_name = image.split('@')[-1]
                     if has_duplicated_entry_name:
                         suffix = entry_name.split('.')[-1]

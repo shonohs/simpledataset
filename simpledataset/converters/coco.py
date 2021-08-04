@@ -2,6 +2,7 @@ import collections
 import json
 import logging
 import pathlib
+import tqdm
 from simpledataset.common import ObjectDetectionDataset
 
 
@@ -59,7 +60,7 @@ class CocoWriter:
         annotations = []
         images = []
         annotation_index = len(dataset)
-        for i, (image_filename, labels) in enumerate(dataset):
+        for i, (image_filename, labels) in enumerate(tqdm.tqdm(dataset, "Copying images")):
             for class_id, x, y, x2, y2 in labels:
                 area = (x2 - x) * (y2 - y)
                 annotations.append({'id': annotation_index,
