@@ -5,7 +5,7 @@ import setuptools
 readme_filepath = pathlib.Path(__file__).parent / 'README.md'
 
 setuptools.setup(name='simpledataset',
-                 version='0.2.1',
+                 version='0.2.2',
                  description="Utility tools for SIMPLE vision dataset format.",
                  long_description=readme_filepath.read_text(),
                  long_description_content_type='text/markdown',
