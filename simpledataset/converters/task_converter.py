@@ -1,8 +1,11 @@
 """Change the task of the dataset. For example, OD => IC.
 """
+import logging
 import zipfile
 import tqdm
 from simpledataset.common import ImageClassificationDataset, ObjectDetectionDataset
+
+logger = logging.getLogger(__name__)
 
 
 def _make_unique_filepath(filepath):
@@ -39,15 +42,28 @@ class TaskConverter:
         data = []
         images_zip_filepath = _make_unique_filepath(output_directory / 'images.zip')
         images_zip_filename = images_zip_filepath.name
+        index = 0
         with zipfile.ZipFile(images_zip_filepath, mode='w', compression=zipfile.ZIP_STORED) as f:
             for image, labels in tqdm.tqdm(dataset, "Cropping images", disable=None):
+                pil_image = dataset.load_image(image)
                 for label in labels:
-                    index = len(data)
-                    pil_image = dataset.load_image(image)
-                    cropped_image = pil_image.crop(tuple(label[1:]))
+                    x, y, x2, y2 = label[1:]
+                    if x >= pil_image.width or y >= pil_image.height or x2 <= 0 or y2 <= 0 or x >= x2 or y >=y2:
+                        logger.warning(f"Invalid box detected: {x} {y} {x2} {y2} for image (w {pil_image.width} x h {pil_image.height})")
+                        continue
+
+                    if x < 0 or y < 0 or x2 > pil_image.width or y2 > pil_image.height:
+                        logger.debug(f"Invalid box detected: {x} {y} {x2} {y2} for image (w {pil_image.width} x h {pil_image.height})")
+                        x = max(x, 0)
+                        y = max(y, 0)
+                        x2 = min(x2, pil_image.width)
+                        y2 = min(y2, pil_image.height)
+
+                    cropped_image = pil_image.crop((x, y, x2, y2))
                     with f.open(f'{index}.jpg', 'w') as zf:
                         cropped_image.save(zf, format='JPEG')
                     data.append((f'{images_zip_filename}@{index}.jpg', [label[0]]))
+                    index += 1
 
         return ImageClassificationDataset(data, output_directory, label_names=dataset.labels)
 
