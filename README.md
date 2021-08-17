@@ -33,7 +33,8 @@ dataset_concat <input_txt_filepath> <input_txt_filepath2> [<input_txt_filepath>,
 
 dataset_shuffle # NYI
 
-dataset_sample # NYI
+# Extract a small subset from the dataset randomly.
+dataset_sample <input_txt_filepath> <output_filepath> [-n <num_images>]
 
 # Re-package images and labels into new zip files.
 dataset_pack <input_txt_filepath> <output_filepath> [--images_directory=<images_directory>] [--keep_empty_images]

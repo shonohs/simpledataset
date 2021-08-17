@@ -1,6 +1,6 @@
 import argparse
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, DatasetWriter
 
 
 def defrag(main_txt_filepath, output_filepath):
@@ -30,17 +30,15 @@ def defrag(main_txt_filepath, output_filepath):
     new_label_names = [dataset.labels[sorted_used_labels[i]] for i in range(len(mapping))]
     if dataset.type == 'image_classification':
         data = [(image, [mapping.get(x, x) for x in labels]) for image, labels in dataset]
-        dataset = ImageClassificationDataset(data, main_txt_filepath.parent, label_names=new_label_names)
     elif dataset.type == 'object_detection':
         data = [(image, [(mapping.get(x[0], x[0]), *x[1:]) for x in labels]) for image, labels in dataset]
-        dataset = ObjectDetectionDataset(data, main_txt_filepath.parent, label_names=new_label_names)
     elif dataset.type == 'visual_relationship':
         data = [(image, [(mapping.get(x[0], x[0]), *x[1:5], mapping.get(x[5], x[5]), *x[5:10], mapping.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
-        dataset = VisualRelationshipDataset(data, main_txt_filepath.parent, label_names=new_label_names)
     else:
         raise RuntimeError
 
-    DatasetWriter().write(dataset, output_filepath)
+    new_dataset = SimpleDatasetFactory().create(dataset.type, data, main_txt_filepath.parent, label_names=new_label_names)
+    DatasetWriter().write(new_dataset, output_filepath)
     print(f"Successfully saved {output_filepath}")
 
 

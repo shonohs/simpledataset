@@ -110,6 +110,9 @@ class ObjectDetectionLabelLoader(LabelLoader):
         data = []
         for line in self._reader.read(filepath).splitlines():
             label_id, x_min, y_min, x_max, y_max = [int(s) for s in line.strip().split()]
+            if x_min >= x_max or y_min >= y_max or x_min < 0 or y_min < 0:
+                logger.warning(f"Ignoring an invalid box {x_min} {y_min} {x_max} {y_max} in {filepath}")
+                continue
             data.append((label_id, x_min, y_min, x_max, y_max))
         return data
 
@@ -205,3 +208,7 @@ class SimpleDatasetFactory:
 
         dataset_class = self.SUPPORTED_DATASET[dataset_type]
         return dataset_class.load(main_txt, directory, images_directory)
+
+    def create(self, dataset_type, data, directory, label_names=None, images_directory=None):
+        dataset_class = self.SUPPORTED_DATASET[dataset_type]
+        return dataset_class(data, directory, label_names, images_directory)

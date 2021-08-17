@@ -33,7 +33,7 @@ def filter_dataset(main_txt_filepath, output_filepath, include_class_ids, exclud
                        'visual_relationship': VisualRelationshipDataset}
     dataset = DATASET_CLASSES[dataset.type](data, main_txt_filepath.parent, label_names=dataset.labels)
 
-    copy_images = main_txt_filepath != output_filepath.parent
+    copy_images = main_txt_filepath.parent != output_filepath.parent
     DatasetWriter().write(dataset, output_filepath, copy_images=copy_images)
     print(f"Successfully saved {output_filepath}")
 
