@@ -4,7 +4,7 @@ from simpledataset.common import SimpleDatasetFactory, DatasetWriter
 
 
 def defrag(main_txt_filepath, output_filepath):
-    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
     used_labels = set()
 
     if dataset.type == 'image_classification':

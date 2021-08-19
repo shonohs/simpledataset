@@ -4,10 +4,11 @@ from simpledataset.common import SimpleDatasetFactory, DatasetWriter
 from simpledataset.converters import CocoWriter, TaskConverter
 
 
-def convert_to(main_txt, directory, target_format, output_filepath):
-    dataset = SimpleDatasetFactory().load(main_txt, directory)
+def convert_to(main_txt_filepath, target_format, output_filepath):
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
 
     WRITERS = {'coco': CocoWriter}
+
     if target_format in ['image_classification', 'object_detection', 'visual_relationship']:
         dataset = TaskConverter().convert(dataset, target_format, output_filepath.parent)
         DatasetWriter().write(dataset, output_filepath)
@@ -28,14 +29,11 @@ def main():
 
     args = parser.parse_args()
 
-    main_txt = args.main_txt_filepath.read_text()
-    directory = args.main_txt_filepath.parent
-
     if args.output_filepath.exists():
         parser.error(f"{args.output_filepath} already exists.")
 
     args.output_filepath.parent.mkdir(parents=True, exist_ok=True)
-    convert_to(main_txt, directory, args.target_format, args.output_filepath)
+    convert_to(args.main_txt_filepath, args.target_format, args.output_filepath)
 
 
 if __name__ == '__main__':

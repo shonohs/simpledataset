@@ -6,7 +6,7 @@ from simpledataset.common import SimpleDatasetFactory, ImageClassificationDatase
 
 
 def concat_datasets(main_txt_filepaths, output_filepath):
-    datasets = [SimpleDatasetFactory().load(f.read_text(), f.parent) for f in main_txt_filepaths]
+    datasets = [SimpleDatasetFactory().load(f) for f in main_txt_filepaths]
 
     dataset_types = [d.type for d in datasets]
     if len(set(dataset_types)) != 1:

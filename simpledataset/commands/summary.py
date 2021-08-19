@@ -4,8 +4,8 @@ import pathlib
 from simpledataset.common import SimpleDatasetFactory
 
 
-def print_summary(main_txt, directory):
-    dataset = SimpleDatasetFactory().load(main_txt, directory)
+def print_summary(main_txt_filepath):
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
     num_class_samples = collections.Counter()
 
     if dataset.type == 'image_classification':
@@ -37,11 +37,10 @@ def main():
     parser.add_argument('main_txt_filepath', type=pathlib.Path)
 
     args = parser.parse_args()
+    if not args.main_txt_filepath.exists():
+        parser.error(f"Cannot find {args.main_txt_filepath}")
 
-    main_txt = args.main_txt_filepath.read_text()
-    directory = args.main_txt_filepath.parent
-
-    print_summary(main_txt, directory)
+    print_summary(args.main_txt_filepath)
 
 
 if __name__ == '__main__':

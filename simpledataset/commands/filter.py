@@ -1,13 +1,13 @@
 import argparse
 import logging
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, DatasetWriter
 
 logger = logging.getLogger(__name__)
 
 
 def filter_dataset(main_txt_filepath, output_filepath, include_class_ids, exclude_class_ids):
-    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
     max_class_id = dataset.get_max_class_id()
     include_class_ids = set(include_class_ids or [i for i in range(max_class_id + 1) if i not in exclude_class_ids])
 
@@ -28,11 +28,7 @@ def filter_dataset(main_txt_filepath, output_filepath, include_class_ids, exclud
     else:
         raise RuntimeError
 
-    DATASET_CLASSES = {'image_classification': ImageClassificationDataset,
-                       'object_detection': ObjectDetectionDataset,
-                       'visual_relationship': VisualRelationshipDataset}
-    dataset = DATASET_CLASSES[dataset.type](data, main_txt_filepath.parent, label_names=dataset.labels)
-
+    dataset = SimpleDatasetFactory().create(dataset.type, data, main_txt_filepath.parent, label_names=dataset.labels)
     copy_images = main_txt_filepath.parent != output_filepath.parent
     DatasetWriter().write(dataset, output_filepath, copy_images=copy_images)
     print(f"Successfully saved {output_filepath}")

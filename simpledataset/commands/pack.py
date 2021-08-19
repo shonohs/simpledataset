@@ -4,7 +4,7 @@ from simpledataset.common import SimpleDatasetFactory, ImageClassificationDatase
 
 
 def pack(main_txt_filepath, output_filepath, images_directory, keep_empty_images):
-    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent, images_directory=images_directory)
+    dataset = SimpleDatasetFactory().load(main_txt_filepath, images_directory=images_directory)
 
     data = [(image, labels) for image, labels in dataset if labels or keep_empty_images]
 

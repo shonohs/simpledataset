@@ -1,26 +1,25 @@
 import argparse
 import pathlib
-from simpledataset.common import SimpleDatasetFactory, ImageClassificationDataset, ObjectDetectionDataset, VisualRelationshipDataset, DatasetWriter
+from simpledataset.common import SimpleDatasetFactory, DatasetWriter
 
 
 def map_dataset(main_txt_filepath, output_filepath, mappings_list):
-    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
     mappings = {int(src): int(dst) for src, dst in mappings_list}
 
     if dataset.type == 'image_classification':
         data = [(image, [mappings.get(x, x) for x in labels if mappings.get(x, x) >= 0]) for image, labels in dataset]
-        dataset = ImageClassificationDataset(data, main_txt_filepath.parent)
     elif dataset.type == 'object_detection':
         data = [(image, [(mappings.get(x[0], x[0]), *x[1:]) for x in labels if mappings.get(x[0], x[0]) >= 0]) for image, labels in dataset]
-        dataset = ObjectDetectionDataset(data, main_txt_filepath.parent)
     elif dataset.type == 'visual_relationship':
         data = [(image, [(mappings.get(x[0], x[0]), *x[1:5], mappings.get(x[5], x[5]), *x[6:10], mappings.get(x[10], x[10])) for x in labels]) for image, labels in dataset]
         data = [(image, [x for x in labels if x[0] >= 0 and x[5] >= 0 and x[10] >= 0]) for image, labels in data]
-        dataset = VisualRelationshipDataset(data, main_txt_filepath.parent)
     else:
         raise RuntimeError
 
-    DatasetWriter().write(dataset, output_filepath, skip_labels_txt=True)
+    dataset = SimpleDatasetFactory().create(dataset.type, data, main_txt_filepath.parent, label_names=dataset.labels)
+    copy_images = main_txt_filepath.parent != output_filepath.parent
+    DatasetWriter().write(dataset, output_filepath, copy_images=copy_images)
     print(f"Successfully saved {output_filepath}")
 
 
@@ -51,10 +50,8 @@ def main():
     parser.add_argument('output_filepath', type=pathlib.Path)
     parser.add_argument('--map', nargs=2, action='append', metavar=('src_class_id', 'dst_class_id'))
     parser.add_argument('--map_all', nargs=2, type=pathlib.Path, help="Given 2 labels.txt files, update the annotations so that it align with the second labels.txt.")
-    args = parser.parse_args()
 
-    if args.main_txt_filepath.parent != args.output_filepath.parent:
-        parser.error("The output file must be in the same directory.")
+    args = parser.parse_args()
 
     if args.output_filepath.exists():
         parser.error(f"{args.output_filepath} already exists.")

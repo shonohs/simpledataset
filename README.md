@@ -69,6 +69,20 @@ dataset_concat mnist_subset/images.txt mnist_subset2/images.txt new_combined.txt
 # new_combined.txt has 20 classes at this point. Let's merge them into 10 classes.
 dataset_map new_combined.txt new_mapped_10.txt --map 10 0 --map 11 1 --map 12 2 --map 13 3 --map 14 4 --map 15 5 --map 16 6 --map 17 7 --map 18 8 --map 19 9
 ```
+
+## Python APIs
+```python
+from simpledataset import SimpleDatasetFactory, DatasetWriter
+
+# Load a dataset
+images_filepath = pathlib.Path('images.txt')
+dataset = SimpleDatasetFactory().load(images_filepath)
+
+# Save a dataset
+output_filepath = pathlib.Path('output.txt')
+DatasetWriter().write(dataset, output_filepath)
+```
+
 ## SIMPLE Dataset format
 Currently there are 2 dataset formats, Image Classification and Object Detection. Both datasets have a single txt file, image files and an optional list of label names (labels.txt). In addition to that, Object Detection datasets has label files that contains bbox info.
 

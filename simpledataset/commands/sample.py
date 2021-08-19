@@ -5,7 +5,7 @@ from simpledataset.common import SimpleDatasetFactory, DatasetWriter
 
 
 def sample(main_txt_filepath, output_filepath, num_images):
-    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
 
     if num_images >= len(dataset):
         print(f"Request {num_images} samples, but the dataset has only {len(dataset)} samples.")

@@ -42,7 +42,7 @@ def _draw_vr_labels(image, annotations, label_names):
 
 
 def draw_dataset(main_txt_filepath, output_dir):
-    dataset = SimpleDatasetFactory().load(main_txt_filepath.read_text(), main_txt_filepath.parent)
+    dataset = SimpleDatasetFactory().load(main_txt_filepath)
 
     drawer = {'image_classification': _draw_ic_labels,
               'object_detection': _draw_od_labels,

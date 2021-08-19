@@ -201,7 +201,14 @@ class SimpleDatasetFactory:
                          'object_detection': ObjectDetectionDataset,
                          'visual_relationship': VisualRelationshipDataset}
 
-    def load(self, main_txt, directory=pathlib.Path('.'), images_directory=None):
+    def load(self, main_txt_or_filepath, directory=None, images_directory=None):
+        if isinstance(main_txt_or_filepath, pathlib.Path):
+            main_txt = main_txt_or_filepath.read_text()
+            directory = directory or main_txt_or_filepath.parent
+        else:
+            main_txt = main_txt_or_filepath
+            directory = directory or pathlib.Path.cwd()
+
         dataset_type = DatasetTypeDetector().detect(main_txt, directory)
         if dataset_type not in self.SUPPORTED_DATASET:
             raise RuntimeError(f"Unsupported dataset type: {dataset_type}")
