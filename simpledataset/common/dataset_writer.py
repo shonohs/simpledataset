@@ -63,10 +63,7 @@ class DatasetWriter:
 
         # Generate labels.txt
         if not skip_labels_txt:
-            labels_txt_filepath = _make_unique_filepath(output_filepath.parent / 'labels.txt')
-            if labels_txt_filepath.name != 'labels.txt':
-                logger.warning(f"Saving labels to {labels_txt_filepath} since labels.txt already exists. Please make sure to rename it to labels.txt before using the dataset.")
-            labels_txt_filepath.write_text('\n'.join(dataset.labels))
+            self._write_labels_file(dataset.labels, output_filepath.parent / 'labels.txt')
 
         data = [(image, labels) for image, labels in dataset]
 
@@ -93,6 +90,16 @@ class DatasetWriter:
         label_writer = self.LABEL_WRITERS[dataset.type](output_filepath.parent)
         with open(output_filepath, 'w') as f:
             label_writer.write(f, data)
+
+    def _write_labels_file(self, label_names, labels_filepath):
+        if labels_filepath.exists():
+            existing_labels = [x.strip() for x in labels_filepath.read_text().splitlines()]
+            if existing_labels == label_names:
+                return
+            labels_filepath = _make_unique_filepath(labels_filepath)
+            logger.warning(f"Saving labels to {labels_filepath} since labels.txt already exists. Please make sure to rename it to labels.txt before using the dataset.")
+
+        labels_filepath.write_text('\n'.join(label_names))
 
     @staticmethod
     def _has_duplicated_entry_name(dataset):

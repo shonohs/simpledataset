@@ -49,6 +49,9 @@ class ImageDataset:
     def __len__(self):
         return len(self._data)
 
+    def __getitem__(self, index):
+        return self._data[index]
+
     def load_image(self, image_filename):
         with io.BytesIO(self.read_image_binary(image_filename)) as f:
             image = PIL.Image.open(f)
