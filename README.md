@@ -48,6 +48,9 @@ dataset_draw <input_txt_filepath> <output_dir>
 # Convert from/to other dataset types. 
 dataset_convert_from {coco|openimages_od|openimages_vr} ... <output_filepath>
 dataset_convert_to <input_dataset> {coco|image_classification|object_detection} <output_filepath>
+
+# Create an image-only dataset. Useful for labeling with simpledatasetlabeler.
+dataset_create <image_filepaths> -o <output_filepath>
 ```
 
 

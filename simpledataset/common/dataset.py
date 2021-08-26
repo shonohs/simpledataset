@@ -33,8 +33,9 @@ class ImageDataset:
         try:
             line = ''
             for line in main_txt.splitlines():
-                image_path, labels = line.strip().split(maxsplit=1)
-                labels = label_loader.load(labels)
+                fields = line.strip().split(maxsplit=1)
+                image_path = fields[0]
+                labels = label_loader.load(fields[1]) if len(fields) > 1 else []
                 data.append((image_path, labels))
         except Exception:
             print(f"Failed to parse '{line}'")
@@ -147,7 +148,7 @@ class ImageClassificationDataset(ImageDataset):
     def get_max_class_id(self):
         max_id = 0
         for image, labels in self:
-            if max(labels) > max_id:
+            if labels and max(labels) > max_id:
                 max_id = max(labels)
         return max_id
 
