@@ -16,15 +16,16 @@ class DatasetTypeDetector:
             reader = FileReader(directory)
             label_file_contents = reader.read(label_field)
 
-            label_file_first_line = label_file_contents.splitlines()[0].strip()
-            fields = label_file_first_line.split()
-            if len(fields) == 5:
-                return 'object_detection'
+            if label_file_contents:
+                label_file_first_line = label_file_contents.splitlines()[0].strip()
+                fields = label_file_first_line.split()
+                if len(fields) == 5:
+                    return 'object_detection'
 
-            if len(fields) == 11:
-                return 'visual_relationship'
+                if len(fields) == 11:
+                    return 'visual_relationship'
 
-            raise RuntimeError("Failed to detect the dataset type.")
+                raise RuntimeError("Failed to detect the dataset type.")
 
         # Empty dataset.
         return 'image_classification'
