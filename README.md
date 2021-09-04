@@ -5,9 +5,10 @@ Utility tools for simple vision image dataset format.
 ## Features
 * See the summary of a dataset
 * Convert from/to various dataset formats.
-* Web UI to look into a dataset
 * CUI tools to split and concat datasets.
 * CUI tools to modify labels.
+
+[simpledataset-labeler](https://github.com/shonohs/simpledataset_labeler) provides web UI to view/edit a dataset.
 
 ## Install
 ```
