@@ -33,6 +33,9 @@ def _download_file(url, output_filepath):
     output_filepath.parent.mkdir(parents=True, exist_ok=True)
 
     with requests.get(url, stream=True, allow_redirects=True) as r:
+        if 400 <= r.status_code < 500:
+            raise RuntimeError(f"{url}: Response {r.status_code}")
+
         total_size = int(r.headers['Content-Length'])
         with open(output_filepath, 'wb') as f:
             with tqdm.tqdm(total=total_size, desc=str(output_filepath), unit_scale=True, unit='B') as pbar:
@@ -51,8 +54,8 @@ def download_dataset(main_txt_url, output_dir):
     url = _replace_filename_in_url(main_txt_url, 'labels.txt')
     try:
         _download_file(url, output_dir / 'labels.txt')
-    except IOError:
-        print("labels.txt is not found.")
+    except RuntimeError as e:
+        print(f"Failed to get labels.txt {e}")
 
     # Download referenced files.
     referenced_filenames = _find_referenced_files(main_txt_filepath)
