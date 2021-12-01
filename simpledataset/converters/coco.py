@@ -54,7 +54,7 @@ class CocoReader:
 
 
 class CocoWriter:
-    def write(self, dataset, output_filepath, images_dir):
+    def write(self, dataset, output_filepath, images_dir, **kwargs):
         assert dataset.type == 'object_detection'
 
         annotations = []
@@ -91,3 +91,7 @@ class CocoWriter:
         coco_data = {'info': {}, 'images': images, 'annotations': annotations, 'categories': categories}
 
         output_filepath.write_text(json.dumps(coco_data))
+
+    @staticmethod
+    def add_arguments(parser):
+        pass

@@ -56,6 +56,21 @@ dataset_convert_from coco annotations/instances_val2017.json val2017/ converted.
 dataset_summary converted.txt
 ```
 
+
+## SIMPLE Object Detection dataset to Google Cloud Vision API CSV format
+
+```zsh
+# Check the input dataset
+dataset_summary train_images.txt
+
+dataset_convert_to train_images.txt google_automl_od gs_bucket_name output/train_images.csv
+
+# The converted csv file has references to gs://gs_bucket_name/...
+# All images are in UNASSIGNED set
+# Once converted, upload the output/ directory to the google storage.
+```
+
+
 ## HICO-DET to SIMPLE Visual Relationship dataset
 
 ```zsh

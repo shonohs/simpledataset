@@ -1,10 +1,11 @@
 import argparse
 import pathlib
 from simpledataset.common import DatasetWriter
-from simpledataset.converters import CocoReader, HicoDetReader, OpenImagesODReader, OpenImagesVRReader, VisualGenomeVRReader
+from simpledataset.converters import CocoReader, GoogleAutoMLODReader, HicoDetReader, OpenImagesODReader, OpenImagesVRReader, VisualGenomeVRReader
 
 
 _READERS = {'coco': CocoReader,
+            'google_automl_od': GoogleAutoMLODReader,
             'hicodet': HicoDetReader,
             'openimages_od': OpenImagesODReader,
             'openimages_vr': OpenImagesVRReader,
